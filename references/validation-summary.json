@@ -1,0 +1,35 @@
+{
+  "ab_iterative_pairs_byte_identical": 16,
+  "archive_cells_within_tolerance": 78,
+  "archive_failures": [
+    {
+      "data": "11",
+      "horizontal_difference_m": -0.0012258425815048213,
+      "method": "step3 gn",
+      "mode": "pure",
+      "position3d_difference_m": -0.001226290235280203
+    },
+    {
+      "data": "11",
+      "horizontal_difference_m": 0.0010768366873605828,
+      "method": "step4 lm",
+      "mode": "pure",
+      "position3d_difference_m": 0.0010770851440753404
+    }
+  ],
+  "archive_strict_pass": false,
+  "archive_tolerance_m": 0.001,
+  "byte_repeat_verified": 96,
+  "ctest_suites_passed": 8,
+  "image_id": "sha256:d8c7203e66983be0f255225515d67a064af604dc4b329544a67a7aa70a1ce57e",
+  "max_archive_rmse_difference_m": 0.001226290235280203,
+  "max_clock_error_s": 0,
+  "new_c15_iterative_cells": 16,
+  "numerical_code_commit": "70d22319e35edc55bc7389eccc90548978cff527",
+  "original_recordings": 2,
+  "reference_cells": 80,
+  "replay_binary_sha256": "2cab82a4f9bfcf08c58137b1ba07bb6bc784b4daccdae2bf971fc17e5da63f50",
+  "runs": 96,
+  "teaching_byte_identical_files": 12,
+  "teaching_seed_count": 4
+}

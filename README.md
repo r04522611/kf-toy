@@ -95,6 +95,12 @@ python3 tools/run_matrix.py --binary build/replay3d --data data/events --output 
 
 真實資料指標是GNSS antenna residual proxy，沒有獨立完整SE3／bias truth；heading-only融合後heading residual不是獨立yaw accuracy。相同binary重跑逐byte一致與「重現封存算法指標」是不同驗證，總表分開報告。跨CPU／compiler／libm的bitwise identity不作保證。
 
+## 本輪驗證結果與已知差異
+
+最終96個實測cells全部完成，且每cell重跑結果逐byte相同。8組CTest通過。80個歷史reference中，78個在原宣告1mm RMSE差內；11 pure DR的Step3 GN與Step4 LM差約1.226mm／1.077mm，這兩個嚴格檢查未通過。沒有調參或放寬門檻來改寫結果。
+
+完整診斷見 [numerical-reproduction.md](docs/numerical-reproduction.md)。預設report分開execution／determinism與archive容差；若要求後者也必須通過，使用 `tools/report_validation.py --require-reference`。目前該命令應nonzero，這是已知、保留的結果。完整本地表在 `results/research/validation.md`，精簡摘要在 `references/validation-summary.json`。
+
 ## 教學執行
 
 ```bash

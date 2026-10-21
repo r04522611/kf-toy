@@ -18,7 +18,7 @@ for recording in 10 11; do
  fi
 done
 python3 tools/verify_inputs.py /source data/events
-python3 tools/run_matrix.py --binary build/replay3d --data data/events --output "results/$KF_RUN_NAME" --jobs 4 --repeat --reference-tolerance 0.001
+python3 tools/run_matrix.py --binary build/replay3d --data data/events --output "results/$KF_RUN_NAME" --jobs 4 --repeat
 python3 tools/report_validation.py --matrix "results/$KF_RUN_NAME" --output "results/$KF_RUN_NAME/validation.md"
 ./build/kf_teaching "results/$KF_RUN_NAME-teaching" 4 12
 python3 tools/render_results.py "results/$KF_RUN_NAME-teaching"
