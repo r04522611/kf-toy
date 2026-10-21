@@ -1,12 +1,12 @@
-# KF 教學案例：從可解析答案到研究邊界
+# KF teaching examples: from analytic answers to research limits
 
-[繁體中文](teaching.md) | [English](teaching.en.md)
+[English repository](https://github.com/r04522611/kf-toy) | [Traditional Chinese teaching guide](https://github.com/r04522611/kf-toy-mandarin/blob/codex/kf-cpp-toy/docs/teaching.md)
 
-這份教材搭配 `kf_teaching` 與 `kf_math_tests`。目標是讓讀者在同一組資料、prior、noise 與評分下，辨認 formulation、output approximation 與 nonlinear solver 各自改了什麼。它們不是算法排名，也不以真實資料 GNSS proxy 當成完整 pose truth。
+Use this guide with `kf_teaching` and `kf_math_tests`. With common data, priors, noise and scoring, readers can distinguish changes to the formulation, output approximation and nonlinear solver. These examples do not rank algorithms or treat road-data GNSS proxies as full pose truth.
 
-## 執行與產物
+## Execution and artifacts
 
-在 README 的 Docker 環境完成編譯後：
+After building in the Docker environment described in the README:
 
 ```bash
 ./build/kf_math_tests
@@ -15,47 +15,45 @@ python3 tools/render_results.py results/teaching
 # optional: python3 tools/plot_examples.py results/teaching
 ```
 
-執行檔之後的三個參數依序為輸出目錄、seeds 數與總秒數；沒有參數時為 `results/teaching 4 12`。`render_results.py` 使用 Python standard library 產生 SVG；只有可選的 `plot_examples.py` PNG 繪圖需要 matplotlib。繪圖不參與 estimator、評分或 deterministic 核對。最小 C++ runtime 不依賴 Python 或 ROS。繪圖可以在 Ubuntu host 上執行。
+The three arguments after the executable are output directory, seed count and duration in seconds. Defaults are `results/teaching 4 12`. `render_results.py` produces SVGs using the Python standard library; only optional PNG plotting with `plot_examples.py` requires matplotlib. Plotting does not affect estimation, scoring or deterministic comparisons. The minimal C++ runtime requires neither Python nor ROS. Plotting can run on the Ubuntu host.
 
-輸出如下：
-
-| 檔案 | 內容 |
+|File|Contents|
 |---|---|
-| `metrics.csv` | 每個 scenario × seed × recipe × backend 的位置／姿態 RMSE、normalized NEES15、z coverage、velocity NIS |
-| `trace.csv` | seed 0 的時間序列，包含 truth、estimate、bias error、NEES 與 heading availability |
-| `remainder.csv` | 七個方向、多個尺度的 ordinary／midpoint noiseless remainder |
-| `constraints.csv` | 線性 tangent support 與 nonlinear constrained state 的差異 |
-| `recovery.csv` | 同一個大姿態誤差的 KF／GN／LM 單次量測更新 |
-| `anchor.csv` | 另行比較 TG B 無 anchor、有限 noise anchor、C15_B structural constraint |
-| `integration.csv` | held／varying force、left／midpoint sample 的 Step1／Step2 步長掃描 |
-| `so3.csv` | SO(3) exp、線性加法與 finite reset 的大小角度比較 |
-| `assumptions.csv` | 正確 heading、錯誤 heading likelihood、錯誤而過度自信 prior |
-| `slip.csv` | 直接 3D velocity 與 forward＋NHC，在無側滑／有側滑的比較 |
-| `scalar.csv` | 手算可對照的一維 random walk KF |
-| `manifest.txt` | seed、採樣、truth、dropout 與 model mismatch 定義 |
+|`metrics.csv`|Position/attitude RMSE, normalized NEES15, z coverage and velocity NIS for every scenario × seed × recipe × backend|
+|`trace.csv`|Seed-0 time series: truth, estimate, bias error, NEES and heading availability|
+|`remainder.csv`|Ordinary/midpoint noiseless remainders across seven directions and multiple scales|
+|`constraints.csv`|Difference between linear tangent support and nonlinear constrained state|
+|`recovery.csv`|One measurement update from a common large attitude error, using KF/GN/LM|
+|`anchor.csv`|Separate comparison of TG B without anchor, with finite-noise anchor, and C15_B structural constraint|
+|`integration.csv`|Step1/Step2 step-size sweep with held/varying force and left/midpoint samples|
+|`so3.csv`|Small/large-angle SO(3) exponential, additive approximation and finite reset|
+|`assumptions.csv`|Correct heading, incorrect heading likelihood and overconfident incorrect prior|
+|`slip.csv`|Direct 3D velocity versus forward + NHC, with and without sideslip|
+|`scalar.csv`|A hand-checkable one-dimensional random-walk KF|
+|`manifest.txt`|Definitions of seeds, sampling, truth, dropout and model mismatch|
 
-同一個 binary、平台與輸入參數應輸出完全相同的 CSV。編譯器、Eigen、libm 或架構變更後，不宣稱輸出仍逐 byte 相同；應重新跑數學測試與 numerical regression。runtime 不寫入 deterministic CSV。
+The same binary, platform and arguments should produce identical CSV bytes. Changes to compiler, Eigen, libm or architecture require fresh mathematical tests and numerical regression; cross-version byte identity is not promised. Execution timing is excluded from deterministic CSVs.
 
-## 第一課：一維 KF 如何分配信任
+## Lesson 1: how a scalar KF allocates trust
 
-`scalar.csv` 使用每步固定加上已知輸入 0.1 的一維 random walk。process variance 為 0.01，measurement variance 為 0.04。公式是：
+`scalar.csv` uses a one-dimensional random walk with known input 0.1 at every step, process variance 0.01 and measurement variance 0.04:
 
 \[
 P^- = P^+ + Q,\quad K=P^-/(P^-+R),\quad
 \hat x^+=\hat x^-+K(z-\hat x^-).
 \]
 
-Joseph form：
+The Joseph form is:
 
 \[
 P^+=(1-K)^2P^-+K^2R.
 \]
 
-先讓同事手算第一筆，再觀察 gain 的穩定值。這個標量例子直接實作公式，用作進入 3D library 前的概念教材；`math_contracts` 另外用 library 的線性 position observation 驗證解析 posterior，防止只測到教材本身。
+Calculate the first update by hand, then inspect the steady gain. This scalar example implements the formulas directly as preparation for the 3D library. Separately, `math_contracts` verifies the analytic posterior through the library's linear position observation, so verification extends beyond the teaching generator itself.
 
-## 第二課：離散化前提，比「精確」這個字重要
+## Lesson 2: the assumptions behind exact discretization
 
-數學測試使用固定 angular velocity \(\omega_z=2\) 與 body specific force \(f_x=3\)，時間長度 \(h=0.5\)。精確答案：
+The mathematical test holds angular velocity at \(\omega_z=2\), body specific force at \(f_x=3\), and interval length at \(h=0.5\). The exact answer is:
 
 \[
 v_x=3\sin(2h)/2,\quad v_y=3(1-\cos(2h))/2,
@@ -66,83 +64,83 @@ p_x=3(1-\cos(2h))/4,\quad
 p_y=3(h/2-\sin(2h)/4).
 \]
 
-Step2 的 ZOH flow 應符合答案；Step1 會有可見誤差。這裡「精確」是步內 body input 不變的 mean flow；不代表 sample 內真實訊號一定不變，也不代表 stochastic covariance 是所有情況的精確解。
+Step2's ZOH flow should match; Step1 has visible error. Exactness here concerns the mean flow with constant body input within the interval. It does not establish constant real signals between samples or exact stochastic covariance in every situation.
 
-完整 teaching trajectory 的 speed 隨時間變化，IMU 取 interval midpoint 再作 held input。這刻意保留小量時間離散誤差，避免 truth generator 直接呼叫 estimator 的 Gamma helper，得到循環驗證。
+The full teaching trajectory has time-varying speed. IMU input is sampled at the interval midpoint and held. This deliberately retains small discretization error and avoids circular verification through a truth generator calling the estimator's Gamma helper.
 
-## 第三課：chart、physical covariance 與 finite correction
+## Lesson 3: charts, physical covariance and finite corrections
 
-`math_contracts` 在非零姿態、速度、位置與 bias 上檢驗：
+At nonzero attitude, velocity, position and bias, `math_contracts` checks:
 
-1. `local(prior,retract(prior,delta)) ≈ delta`。
-2. native correction 到 physical error 的 Jacobian，以 central finite difference 核對。
-3. correction 後新 tangent 的 reset Jacobian，以 central finite difference 核對。
-4. SO(3) 在接近零與接近 pi 的 exp/log round trip。
+1. `local(prior,retract(prior,delta)) ≈ delta`.
+2. The Jacobian from native correction to physical error, against central finite differences.
+3. The post-correction tangent reset Jacobian, against central finite differences.
+4. SO(3) exp/log round trips near zero and pi.
 
-共同模型 Step1 與 Step2 均使用精確 SO(3) right Jacobian reset，符合本次 fixed-gravity reference；更早 baseline／mean-only 的 first-order reset 是另一個近似，不應混稱。
+Step1 and Step2 both use the exact SO(3) right-Jacobian reset, matching this fixed-gravity reference. Earlier baseline/mean-only first-order resets are a different approximation.
 
-Physical error 順序固定為 `[theta_body, v_world, p_world, bg_body, ba_body]`。比較不同 formulation 的 uncertainty 必須先映到此 physical chart；native covariance 的同一個 index 不代表同一個物理方向。
+The common physical error order is `[theta_body, v_world, p_world, bg_body, ba_body]`. Map uncertainty into this physical chart before comparing formulations. Identical native covariance indices need not represent identical physical directions.
 
-## 第四課：Step3 與 C15_A 是等價性教材
+## Lesson 4: Step3 and C15_A teach equivalence
 
-固定 gravity、相同 prior、事件、noise 與 output 下，Step3 與 C15_A 共用 right-invariant navigation＋physical additive bias formulation。測試同時跑 KF／GN／LM，核對多步 state 與 physical covariance。
+With fixed gravity and identical priors, events, noise and output, Step3 and C15_A share right-invariant navigation with physical additive bias. Tests compare multistep state and physical covariance for KF, GN and LM.
 
-這兩個 recipe 名稱保留研究脈絡，不當成兩份獨立性能證據。若兩條線完全重疊，這正是預期結果。Production 應共用底層公式，而非複製一份 C15_A 再讓兩份公式逐漸分歧。
+Both names preserve research history; they are not independent performance evidence. Overlapping curves are expected. Production implementation should share the underlying equations rather than duplicate C15_A and let two copies diverge.
 
-## 第五課：C15_B 的 output 階數
+## Lesson 5: the output order of C15_B
 
-令 navigation perturbation 為 \(\eta=(\theta,\rho_v,\rho_p)\)，\(z\) 由無噪聲 perturbed state 生成，\(r=\hat Rz-\hat v\)。比較：
+Let navigation perturbation be \(\eta=(\theta,\rho_v,\rho_p)\), generate \(z\) from a noiseless perturbed state, and define \(r=\hat Rz-\hat v\). Compare:
 
 \[
 e_A=r-\rho_v,\qquad
 e_B=r-\rho_v-\tfrac12[r]_\times\theta.
 \]
 
-同時縮小所有 perturbation 分量，ordinary remainder 應是二階，midpoint remainder 是三階；尺度減半時，norm 比約為 4 與 8。數學測試以七個方向及五個尺度核對；CSV 額外輸出較小尺度供繪圖。
+Scaling all perturbation components together gives a second-order ordinary remainder and third-order midpoint remainder. Halving scale should yield norm ratios near 4 and 8. Mathematical tests check seven directions and five scales; the CSV includes finer scales for plotting.
 
-這是無噪聲的 local remainder 性質。含噪時 update matrix 依 measurement 改變，不能把 cubic remainder 直接解讀成 calibrated posterior 或更低長程 RMSE。實際 replay 的跨資料取捨見 `plan/` 研究報告，不以這個小 toy 推翻或替代原結果。
+This is a local noiseless property. With noise, the update matrix depends on the measurement. A cubic remainder alone does not establish posterior calibration or lower long-term RMSE. Consult the research reports in `plan/` for tradeoffs across recordings; this toy does not replace those results.
 
-## 第六課：GN／LM 是如何使用同一筆資訊
+## Lesson 6: how GN/LM reuse one piece of information
 
-`recovery.csv` 設定 prior yaw=1.2 rad，已知 world velocity 接近 `(2,0,0)`，body velocity measurement 為 `(2,0,0)`。姿態 prior 寬、velocity prior 窄，使 body velocity residual 提供姿態恢復訊息。
+`recovery.csv` starts with prior yaw 1.2 rad, trusted world velocity near `(2,0,0)` and body velocity measurement `(2,0,0)`. A wide attitude prior and narrow velocity prior allow the body-velocity residual to inform attitude recovery.
 
-每種 backend 使用同一 prior 與 likelihood。GN／LM 迭代時固定 prior，不把上一輪 posterior 當成新的 prior；否則同一 measurement 會被重複計算，covariance 人為縮小。
+Every backend uses the same prior and likelihood. GN/LM hold that prior fixed throughout iteration. Replacing it with the previous iteration's posterior would count the same measurement repeatedly and artificially shrink covariance.
 
-閱讀順序：
+Read the results in this order:
 
-1. 看 KF 的單次 correction 與 nonlinear residual 是否仍大。
-2. 看 GN／LM 的 `initial_cost`、`final_cost`、iterations 與 status。
-3. 比較線性 position 測試：KF／GN／LM 必須回到解析答案，迭代次數不能改變 evidence 數量。
-4. 看 C15_A／C15_B 與 Step5A／Step5B 在 GN／LM 下的 equivalence test。
+1. Inspect the single KF correction and remaining nonlinear residual.
+2. Inspect GN/LM `initial_cost`, `final_cost`, iterations and status.
+3. Compare the linear-position test: KF/GN/LM must recover the analytic posterior, irrespective of iteration count.
+4. Inspect the GN/LM equivalence tests for C15_A/C15_B and Step5A/Step5B.
 
-Ordinary／C-star 只影響 single-pass output approximation。GN／LM 使用相同 exact likelihood 與 derivative，因此 A/B iterative 結果應一致。LM damping 是 solver 的穩定工具，不能直接當成最終 posterior 的資訊。
+Ordinary/C-star changes only the single-pass output approximation. GN/LM use the same exact likelihood and derivative, so iterative A/B results should coincide. LM damping stabilizes the solver; it is not added directly to final posterior information.
 
-「更充分求解」並不保證「假設更正確」；接著看 bias mismatch case。
+Solving the chosen problem more thoroughly does not establish correct assumptions. Continue with the bias-mismatch case.
 
-## 第七課：matched、heading dropout、pure DR 與模型錯配
+## Lesson 7: matched inputs, heading dropout, pure DR and model mismatch
 
-全部 scenarios 使用同一條 closed-form varying-speed circle：
+All scenarios use one closed-form circle with varying speed:
 
 \[
 R=R_z(0.3t),\quad v=R[2+0.3\sin(0.7t),0,0]^\top.
 \]
 
-位置以解析積分生成；IMU mean 由曲線的導數直接計算，沒有呼叫 estimator 的 propagation。noise 使用固定 seed 的 mt19937 與明確 Box–Muller 轉換，所有 recipe 共用同一組 samples 與 physical prior。
+Position comes from analytic integration and IMU means from trajectory derivatives, without estimator propagation calls. Noise uses fixed-seed mt19937 with an explicit Box–Muller transform. All recipes receive the same samples and physical prior.
 
-| Scenario | 假設 | 要觀察什麼 |
+|Scenario|Assumption|What to inspect|
 |---|---|---|
-| `matched_heading` | 固定 physical biases；正確 IMU／velocity／heading noise | baseline error、NEES、coverage，勿預期小 sample 正好 95% |
-| `heading_dropout` | 中間 35%–75% 時間沒有 heading | 姿態／bias uncertainty 與 dropout 後恢復 |
-| `pure_dr` | 全程只用 IMU＋完整 body velocity | global yaw 的 gauge freedom，外援資訊缺失不能只靠換 chart 解決 |
-| `bias_mismatch` | 半程後額外 +0.12 rad/s gyro z step，filter bias random walk 為零 | 錯誤 process model 下，較低 optimizer cost 可能仍過度自信 |
+|`matched_heading`|Fixed physical biases; matched IMU/velocity/heading noise|Baseline errors, NEES and coverage; a small sample need not yield exactly 95%|
+|`heading_dropout`|Heading absent from 35% to 75% of the duration|Attitude/bias uncertainty and recovery after dropout|
+|`pure_dr`|Only IMU and full body velocity throughout|Global yaw gauge freedom; changing charts cannot supply missing external information|
+|`bias_mismatch`|Additional +0.12 rad/s gyro-z step halfway through; zero filter bias random walk|Lower optimizer cost may coexist with overconfidence under an incorrect process model|
 
-這裡 velocity 是真正三維 body velocity observation，包含明確加上的三軸 noise；不是 forward wheel speed 加兩個真實 sensor zeros。真車若使用 NHC，側向／垂向為 pseudo constraints，必須獨立描述其 noise 與失效條件。
+Velocity here is a genuine three-dimensional body-velocity observation with explicit noise on all three axes. It is not forward wheel speed with two measured zero channels. Vehicle NHC lateral/vertical zeros are pseudo constraints requiring their own noise definitions and failure conditions.
 
-Prior error 的各分量以 physical chart 指定，所有 formulation 使用相同 physical covariance。初始姿態由 true attitude 右乘 physical rotation perturbation；速度、位置與 physical bias 加性擾動。
+Prior errors are specified in the physical chart with a common physical covariance. Initial attitude is truth right-multiplied by a physical rotation perturbation; velocity, position and physical biases receive additive perturbations.
 
-四個 seed 的 teaching default 是小型示範，不能用來宣稱統計顯著或 calibrated coverage。需要穩定統計時增加 seeds，保留 paired comparisons，分開報告 seed 間變異。時間序列 samples 相關，不能把每個 timestamp 當成獨立 Monte Carlo trial 計算信賴區間。
+The four-seed default is illustrative, not evidence of statistical significance or calibrated coverage. Increase seed count for stable statistics, retain paired comparisons and report between-seed variation. Time samples are correlated; individual timestamps are not independent Monte Carlo trials for confidence intervals.
 
-### 評分定義
+### Score definitions
 
 \[
 e=[\operatorname{Log}(\hat R^TR),\ v-\hat v,\ p-\hat p,\ b_g-\hat b_g,\ b_a-\hat b_a],
@@ -152,85 +150,84 @@ e=[\operatorname{Log}(\hat R^TR),\ v-\hat v,\ p-\hat p,\ b_g-\hat b_g,\ b_a-\hat
 \operatorname{NEES}_{15}=e^TP_{physical,15}^{-1}e.
 \]
 
-`normalized_nees15` 是每個 velocity event 的 NEES 平均後除以 15；`z_95_coverage` 是 \(|e_z|\le1.95996398454\sqrt{P_{zz}}\) 的比例。`mean_velocity_nis` 在 velocity update 完成後、heading update 前讀取；它不混入 heading residual。不同量測型別的 NIS 必須分開報告。
+`normalized_nees15` averages NEES at velocity events and divides by 15. `z_95_coverage` is the fraction satisfying \(|e_z|\le1.95996398454\sqrt{P_{zz}}\). `mean_velocity_nis` is read after the velocity update and before the heading update; heading residuals are excluded. Report NIS separately for different measurement types.
 
-Pose RMSE 是 world frame 下直接誤差，不作事後 SE(3) alignment。此 toy 有真值；10／11 GNSS antenna residual 只能作 proxy，不能與這裡的 pose truth RMSE 混用。
+Pose RMSE is direct world-frame error without post-hoc SE(3) alignment. This toy has truth. Recording 10/11 antenna residuals are only proxies and are not interchangeable with toy pose-truth RMSE.
 
-## 第八課：結構約束不等於 anchor
+## Lesson 8: structural constraints and anchors
 
-`constraints.csv` 使用已推導的簡化子空間：prior navigation identity，perturbation 只有 position x 與 gyro bias y。先由 physical Jacobian 的 inverse 建立**線性 virtual perturbation 為零**的 TG native correction，再作 finite joint retraction。
+`constraints.csv` uses a derived subspace: identity prior navigation, with only position-x and gyro-bias-y perturbations. The inverse physical Jacobian first constructs a TG native correction with **zero linear virtual perturbation**, followed by finite joint retraction:
 
 \[
 b_{\nu,new}=-\tfrac12\delta p\times\delta b_g.
 \]
 
-完整 TG finite correction 可得到非零 virtual bias；C15 的 reduced retraction 則自然保持 \(b_\nu=0\)。圖中 prediction 只適用於這個子空間，不應宣稱是任意 state 的全域公式。
+The full TG finite correction can produce nonzero virtual bias. C15's reduced retraction naturally retains \(b_\nu=0\). The plotted prediction applies only to this subspace, not globally to arbitrary states.
 
-這展示四種不同操作：
+Distinguish four operations:
 
-- reduced state representation：每個 candidate 都在 constraint surface 上。
-- finite-noise anchor likelihood：保留 latent state，只增加 evidence。
-- zero first-order tangent variance：限制線性 Gaussian support。
-- hard mean clamp：事後改 mean，若 uncertainty 沒有相容處理就不是完整 Bayesian update。
+- Reduced representation: every candidate lies on the constraint surface.
+- Finite-noise anchor likelihood: retain the latent state and add evidence.
+- Zero first-order tangent variance: restrict linear Gaussian support.
+- Hard mean clamp: modify the mean afterward; without compatible uncertainty treatment this is not a complete Bayesian update.
 
-主要 `metrics.csv` comparison **anchor 關閉**，以避免把 output comparison 與約束資訊混為一談。另有 `anchor.csv`，在 matched-heading 與 pure-DR 同樣 samples 下比較 TG_B 無 anchor、TG_B finite-noise anchor 與 C15_B structural constraint。該 study 的 TG virtual prior variance 為 0.01、anchor variance 為 0.001、每 0.2 秒更新一次；它使用明確的共同 physical prior。這是刻意設計的教學組態，不是封存實驗的參數替代品。C15 沒有 virtual state，不加入 anchor。這個 toy 沒有證明 anchor 失效的唯一根因是 curvature；C15 同時改了 dynamics、bias retraction 與 Gaussian family。
+Anchors are **off** in the main `metrics.csv` comparison, keeping output approximation separate from constraint information. A separate `anchor.csv` compares TG_B without anchor, TG_B with finite-noise anchor and C15_B structural constraint using common matched-heading/pure-DR samples. TG virtual prior variance is 0.01, anchor variance 0.001 and update interval 0.2 s, with an explicit common physical prior. These are teaching settings, not replacements for archived parameters. C15 has no virtual state and receives no anchor. The toy does not isolate curvature as the unique cause of anchor failure: C15 also changes dynamics, bias retraction and the Gaussian family.
 
+## Lesson 9: separate integration formulas from sampling assumptions
 
-## 第九課：用步長掃描拆開「積分公式」與「sample 假設」
+`integration.csv` fixes duration at 1 s and angular velocity at 2 rad/s, sweeping step sizes 1, 0.5, 0.2, 0.1, 0.05 and 0.025 s. Each step size is evaluated with left-endpoint and midpoint samples.
 
-`integration.csv` 將總時長固定為 1 秒，角速度固定 2 rad/s；掃描步長 1、0.5、0.2、0.1、0.05、0.025 秒。每個步長分別使用 interval 左端 sample 和 midpoint sample。
+- `held_force`: constant body-x force 3. Step2's mean should match the analytic result regardless of step size; Step1 improves with smaller steps.
+- `varying_force`: body-x force 3 cos(1.7t). The real signal varies between samples, so exact integration of held samples still has input approximation error.
 
-- `held_force`：body x force 恆為 3。Step2 的 mean 應符合解析答案，與步長無關；Step1 隨步長縮小改善。
-- `varying_force`：body x force 為 3 cos(1.7t)。真實訊號在 sample 之間持續變化，Step2 即使對 held sample 積分精確，仍有 input approximation error。
+The second case's true velocity/position comes independently from analytic integrals of cos(1.7t)cos(2t) and cos(1.7t)sin(2t). It does not call the same Gamma helper at finer dt. Comparing left and midpoint samples distinguishes improved interval-input description from improved held-input flow.
 
-第二種 case 的 true velocity／position，由 cos(1.7t)cos(2t) 與 cos(1.7t)sin(2t) 的解析積分獨立生成。不是用更小 dt 呼叫同一套 Gamma helper 作 truth。對照 left／midpoint sampling，可以看出更準確地描述 interval input，與換用更好的 held-input flow，是兩個不同設計選擇。
+Do not hard-code a universal winner across step sizes. Only matched held-force Step2 receives an analytic exactness oracle.
 
-不要將所有步長的相對優劣硬編成「某法必勝」測試；只有符合前提的 held-force Step2 使用解析 exactness oracle。
+## Lesson 10: failure of additive SO(3) approximations
 
-## 第十課：SO(3) 加法近似如何失效
+`so3.csv` fixes a general 3D rotation axis and sweeps angles from near zero to near pi, reporting:
 
-`so3.csv` 固定一個一般三維旋轉軸，掃描接近零到接近 pi 的角度，輸出：
+- Orthogonality error of exp(phi).
+- Orthogonality error of I + hat(phi).
+- Rotation-matrix round-trip error of exp(log(exp(phi))).
+- Difference between the exact right reset Jacobian and I − 0.5hat(phi).
 
-- exp(phi) 的 orthogonality error。
-- I＋hat(phi) 的 orthogonality error。
-- exp(log(exp(phi))) 的 rotation matrix round-trip error。
-- exact right reset Jacobian 與 I－0.5hat(phi) 的差。
+This teaches local approximation; elementwise rotation-matrix addition is not a valid estimator recipe. Near pi, the logarithm's vector representation has a branch. Tests compare reconstructed rotation matrices rather than requiring componentwise equality of rotation vectors across branches.
 
-這是局部近似的教學，不把 rotation matrix 的逐項加法當成合法 estimator recipe。靠近 pi 時 log 的向量表示有分支；測試比較重建的 rotation matrix，不要求跨分支的 rotation vector 逐分量相同。
+## Lesson 11: a converged optimizer can trust an incorrect world
 
-## 第十一課：optimizer 收斂，也可能相信錯的世界
+`assumptions.csv` fixes true yaw at zero and prior yaw at 1.2 rad:
 
-`assumptions.csv` 另外固定 true yaw 為零、prior yaw 為 1.2 rad。三種 case 分別為：
-
-| Case | Prior yaw variance | Heading observation | 想說明的事 |
+|Case|Prior yaw variance|Heading observation|Interpretation|
 |---|---|---|---|
-| `correct_likelihood` | 2 rad² | 0 rad | 可信量測可修正大初始誤差 |
-| `wrong_heading` | 2 rad² | 0.8 rad | 最佳化正確解出了一個偏離真實世界的 likelihood |
-| `overconfident_wrong_prior` | 1e-5 rad² | 0 rad | 正確量測也可能被錯誤而過窄的 prior 壓過 |
+|`correct_likelihood`|2 rad²|0 rad|A trustworthy observation corrects a large initial error|
+|`wrong_heading`|2 rad²|0.8 rad|Optimization correctly solves a likelihood displaced from reality|
+|`overconfident_wrong_prior`|1e-5 rad²|0 rad|An incorrect narrow prior can dominate a correct observation|
 
-三者 measurement standard deviation 都為 0.05 rad。每個 case 跑完整八種 recipe 與三種 backend。看 `final_cost` 的同時必須看 `absolute_truth_error`；cost 只描述設定的問題，不能驗證設定正確。KF 的 diagnostics cost 並非完整 optimizer 記錄，cost 下降只對 GN／LM 解讀。
+Measurement standard deviation is 0.05 rad in all three cases. Each runs all eight recipes and three backends. Read `absolute_truth_error` alongside `final_cost`: cost describes the specified problem and cannot validate its assumptions. KF diagnostic cost is not a full optimizer history; interpret cost decrease as solver progress only for GN/LM.
 
-這裡選擇單一純 yaw case，是讓所有 formulation 都能清楚呈現資訊權重問題；非線性改善另看 `recovery.csv` 的 body-velocity 大姿態恢復。
+The pure-yaw setup exposes information weighting across formulations. For nonlinear improvement, use the separate large-attitude body-velocity recovery in `recovery.csv`.
 
-## 第十二課：真實 body velocity 與 forward＋NHC 不能混稱
+## Lesson 12: full body velocity and forward + NHC
 
-`slip.csv` 固定 Step2，分別跑 KF／GN／LM。它使用獨立解析 circle truth，body velocity 為 `(2, lateral, 0)`，`lateral` 分別為 0 和 0.6 m/s。specific force 的水平分量直接由 omega cross body_velocity 計算，因而包含真實側滑的運動學。
+`slip.csv` fixes Step2 and runs KF/GN/LM on independent analytic circle truth. Body velocity is `(2, lateral, 0)` with lateral 0 or 0.6 m/s. Horizontal specific force comes directly from omega cross body_velocity, including actual sideslip kinematics.
 
-兩種 update：
+The two updates are:
 
-- `measured_3D_velocity`：三軸都是真實 body velocity 加 measurement noise。
-- `forward_plus_NHC`：forward 軸沿用同一 noisy sample，側向與垂向是零的 pseudo constraint。
+- `measured_3D_velocity`: actual body velocity plus measurement noise on all three axes.
+- `forward_plus_NHC`: the same noisy forward sample, with lateral/vertical zero pseudo constraints.
 
-每個 variance 都明確設為 0.0025 (m/s)²；NHC 的兩個零沒有偽裝成獨立實測 noisy sample。無側滑時 NHC 假設成立，可以提供有用約束；有側滑時它是錯誤 likelihood，可能造成 velocity error、錯誤 bias feedback 或過低 coverage。heading 始終存在，避免把 NHC 失效與缺少全域 heading 混在一起。
+Each variance is explicitly 0.0025 (m/s)². NHC zeros are not presented as independent measured noisy samples. Without sideslip, NHC can provide useful valid constraints. With sideslip, its incorrect likelihood can produce velocity error, incorrect bias feedback or low coverage. Heading is always available to separate NHC failure from missing global heading information.
 
-此表輸出 pose RMSE、velocity NIS、最終 accelerometer bias norm 與 body lateral velocity 的 95% interval coverage。body lateral error／variance 都以 true orientation 的側向軸投影 physical velocity error／covariance；這是 toy 已知 truth 的評分軸，不是 estimator 偷看 truth 作更新。
+The table reports pose RMSE, velocity NIS, final accelerometer-bias norm and body-lateral velocity 95% interval coverage. Lateral error/variance project physical velocity error/covariance onto the true orientation's lateral axis. This is a scoring axis available in the toy, not truth supplied to estimator updates.
 
-這些 seed 與時長仍是小型教材，不以幾筆 coverage 宣稱統計精準，也不聲稱 GN／LM 能修復錯誤 NHC。
+Seed counts and durations remain small teaching examples. These coverage samples do not establish statistical precision, and GN/LM cannot be claimed to repair incorrect NHC assumptions.
 
-## 驗收邊界
+## Acceptance boundaries
 
-`kf_math_tests` 是數學契約測試；teach CSV 是可以閱讀與重跑的實驗，不為每個 scenario 硬編碼「某算法必須勝出」。測試涵蓋解析 position posterior、ZOH mean、geometry derivatives、C15 constraints、chart 與 GNLM equivalence、nonlinear recovery、PSD 與 boundary rejection。
+`kf_math_tests` verifies mathematical contracts. Teaching CSVs are readable, repeatable experiments without hard-coded winners in every scenario. Tests cover analytic position posterior, ZOH mean, geometry derivatives, C15 constraints, chart/GNLM equivalence, nonlinear recovery, PSD and boundary rejection.
 
-這不取代完整 10／11 protocol regression，也不構成 ROS、hard real-time、allocation budget、真實 sensor calibration 或安全認證。資料轉換、初始化與 GNSS 資訊模式見資料契約文件。
+These tests do not replace full recording-10/11 protocol regression or establish ROS integration, hard real-time behavior, allocation budgets, real sensor calibration or safety certification. See the [data contract](data-contract.md) for conversion, initialization and GNSS information modes.
 
-來源脈絡：研究方程與命名來自本專案 `plan/KF.md` 及唯讀 SLAM research POC；tests 的 finite-difference 與 remainder 結構參考原 `constrained_tg/test_constrained.cc`，此處以新 library public API 重新表達。研究來源與完整 provenance 請見專案來源紀錄。
+Research equations and naming originate in `plan/KF.md` and the read-only SLAM research POC. Finite-difference/remainder test structures were informed by the original `constrained_tg/test_constrained.cc`, re-expressed through the new library's public API. See [source provenance](source-provenance.md) for the complete record.

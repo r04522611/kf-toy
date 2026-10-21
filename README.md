@@ -1,35 +1,38 @@
-# Kalman Filter 教學 library：C++17／Ubuntu Docker
+# Kalman Filter teaching library: C++17 / Ubuntu Docker
 
-[繁體中文](README.md) | [English](README.en.md)
+English edition and primary implementation repository. [Traditional Chinese edition](https://github.com/r04522611/kf-toy-mandarin). Both editions share the same algorithms, tests and numerical evidence.
 
-獨立專案：`/home/pinghua/kf-toy`，branch `codex/kf-cpp-toy`。原 SLAM repository 僅作唯讀公式、資料與封存結果 reference；新程式不需 ROS、Sophus、PCL、OpenCV 或原 repo 的 binary／headers。
+Standalone project: `/home/pinghua/kf-toy`, branch `codex/kf-cpp-toy`. The original SLAM repository supplies read-only equations, data and archived references. This library requires no ROS, Sophus, PCL, OpenCV, or headers/binaries from that repository.
 
-## 文件索引
+## Documentation
 
-| 文件 | English | 繁體中文 |
-|---|---|---|
-| 使用說明 | [Usage](README.en.md) | [使用說明](README.md) |
-| 完整十二課教學 | [Teaching](docs/teaching.en.md) | [教學文件](docs/teaching.md) |
-| 完整96組驗證總報告 | [Validation](docs/validation.en.md) | [驗證總報告](docs/validation.zh-TW.md) |
+- [Usage guide](README.md)
+- [Twelve teaching lessons](docs/teaching.md)
+- [Full validation report](docs/validation.md)
+- [Data contract](docs/data-contract.md)
+- [Implementation contracts](docs/implementation.md)
+- [Numerical reproduction](docs/numerical-reproduction.md)
+- [Edition maintenance](docs/editions.md)
+- [Traditional Chinese documentation](https://github.com/r04522611/kf-toy-mandarin)
 
-## 已實作的內容
+## Implemented capabilities
 
-- `kf3d` static library：Step1、Step2、Step3、Step4、Step5A、Step5B、C15_A、C15_B；固定 gravity。
-- 三種 backend：single-pass KF、fixed-prior GN、LM；共有24種具名組態。
-- Square-root propagation／Joseph update、finite manifold reset、PSD prior support。
-- 公開 virtual `Formulation`、`MeasurementModel`、`NonlinearSolver` 與 `Estimator`；`Filter<Recipe>` 提供 typed state／covariance facade。
-- Body velocity＋顯式NHC使用約定、GNSS antenna position、mounted heading、TG-only explicit virtual-bias constraint。
-- CSV replay：兩筆初始化，初始化後 pure DR 或 heading-only；完整10／11共96 cells。
-- 來源／輸入／binary hashes、相同binary逐byte重跑、共同scorer、80個封存reference指標。
-- 解析／有限差分測試及具有truth的教學情境；[教學導覽](docs/teaching.md)。
+- `kf3d` static library: Step1, Step2, Step3, Step4, Step5A, Step5B, C15_A and C15_B, with fixed gravity.
+- Three backends: single-pass KF, fixed-prior GN and LM; 24 named configurations.
+- Square-root propagation, Joseph update, finite manifold reset and PSD prior support.
+- Public virtual `Formulation`, `MeasurementModel`, `NonlinearSolver` and `Estimator`; a typed state/covariance facade, `Filter<Recipe>`.
+- Body velocity with explicit NHC conventions, GNSS antenna position, mounted heading and an explicit virtual-bias constraint for TG only.
+- CSV replay with two-fix initialization, followed by pure DR or heading-only operation: 96 cells across recordings 10 and 11.
+- Source/input/binary hashes, byte-identical repeats using the same binary, a common scorer and 80 archived reference metrics.
+- Analytic/finite-difference tests and teaching scenarios with known truth; see the [teaching guide](docs/teaching.md).
 
-C15_A 與 fixed-g Step3 共用 formulation。C15_B 是同一15D formulation的 navigation midpoint output。A/B 的 GN／LM 使用相同 exact likelihood，因此預期一致；C-star 不當成 cost derivative。
+C15_A shares its formulation with fixed-gravity Step3. C15_B uses the same 15D formulation with navigation midpoint output. A/B use the same exact likelihood for GN/LM and should agree. C-star is not used as a cost derivative.
 
-此版本是可獨立使用、受測的研究／教學library。核心使用小型 dynamic Eigen matrices，typed facade不等於無heap或硬即時保證。ROS adapter、部署性能驗收、robust-loss／fixed-lag新研究不在本輪範圍。Estimated-gravity歷史變體也不與fixed-g結果混稱。
+This is a tested standalone research and teaching library. The core uses small dynamic Eigen matrices; the typed facade does not guarantee allocation-free or hard real-time execution. ROS adapters, deployment performance acceptance, robust losses and fixed-lag research are outside this release. Historical estimated-gravity variants are separate from the fixed-gravity results.
 
-## 最小環境與測試
+## Minimal environment and tests
 
-在 Ubuntu：
+Run in Ubuntu:
 
 ```bash
 cd /home/pinghua/kf-toy
@@ -37,9 +40,9 @@ docker build -t kf-toy:dev .
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -w /work kf-toy:dev bash -c 'cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j2 && cmake -E chdir build ctest --output-on-failure'
 ```
 
-只有 GCC、CMake、Make、Eigen 與 Python standard library；Ubuntu base digest已固定。建置image仍從apt取得套件，因此image ID、package versions與source hash必須封存，不能宣稱未來重新apt-build必定產生相同binary。
+Dependencies are GCC, CMake, Make, Eigen and the Python standard library. The Ubuntu base digest is pinned, but apt packages are still obtained at image build time. Archive the image ID, package versions and source hash; a future apt build is not guaranteed to produce the same binary.
 
-`typed_client` 是最小C++ library使用範例；`include/kf3d/typed.hpp` 區分15D PhysicalState與18D TangentGroupState。
+`typed_client` is a minimal library client. `include/kf3d/typed.hpp` distinguishes 15D `PhysicalState` from 18D `TangentGroupState`.
 
 ```cpp
 #include <kf3d/typed.hpp>
@@ -53,72 +56,72 @@ filter.observePosition(V3(1,0,0));
 auto pose = filter.state();
 ```
 
-`cmake --install build --prefix /chosen/prefix` 安裝library／headers；下游 `find_package(kf3d CONFIG REQUIRED)`、連結 `kf3d::kf3d`。
+Install headers and the library with `cmake --install build --prefix /chosen/prefix`. Downstream clients use `find_package(kf3d CONFIG REQUIRED)` and link `kf3d::kf3d`.
 
-## 10／11轉換與單組replay
+## Convert recordings 10/11 and replay one configuration
 
 ```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -v /home/pinghua/slam_in_autonomous_driving/data/ch3:/source:ro -w /work kf-toy:dev python3 tools/convert_events.py /source/10.txt data/events/10.csv --recording 10
 ```
 
-Converter拒絕覆寫existing CSV。CSV保留數字token與原始順序，不做sensor interpolation。完整契約見 [data-contract.md](docs/data-contract.md)。
+The converter refuses to overwrite an existing CSV. It preserves numeric tokens and original event order, without sensor interpolation. See the [data contract](docs/data-contract.md).
 
 ```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -w /work kf-toy:dev ./build/replay3d --input data/events/10.csv --output results/one --recipe step5b --backend kf --mode pure --protocol archive
 ```
 
-Output directory必須不存在。`--recipe`：step1/step2/step3/step4/step5a/step5b/c15a/c15b；`--backend`：kf/gn/lm；`--mode`：pure/heading。
+The output directory must not exist. Choices: `--recipe` step1/step2/step3/step4/step5a/step5b/c15a/c15b; `--backend` kf/gn/lm; `--mode` pure/heading.
 
-Replay採 `configs/research-twofix.json` 所描述的封存protocol固定設定；此JSON是機器可讀的protocol描述，目前runner不接受任意JSON覆寫。一般library呼叫者透過typed `Config`設定。未定義的調參不混入reference reproduction。
+Replay uses the fixed archived protocol described in `configs/research-twofix.json`. This JSON is a machine-readable protocol description; the runner currently does not load arbitrary JSON overrides. General library clients configure the typed `Config`. Unspecified tuning is excluded from reference reproduction.
 
-## 一次執行完整重現
+## Run the complete reproduction
 
 ```bash
 ./tools/reproduce.sh /home/pinghua/slam_in_autonomous_driving/data/ch3 research
 ```
 
-包含build、CTest、CSV conversion（缺少時）、96 cells＋每cell第二次逐byte核對、4 seeds教學情境與SVG圖。完整矩陣比單一toy花費更多時間。`run_matrix.py` 可直接指定 `--recipes`、`--backends`、`--datasets`、`--modes`、`--jobs`做子集；子集使用獨立output以免誤寫總表。
+This builds, runs CTest, converts missing CSVs, executes 96 cells with a second byte comparison for each, and generates four-seed teaching scenarios and SVG figures. The full matrix takes longer than one toy case. `run_matrix.py` supports subsets through `--recipes`, `--backends`, `--datasets`, `--modes` and `--jobs`. Use separate output directories for subsets.
 
 ```bash
 python3 tools/run_matrix.py --binary build/replay3d --data data/events --output results/research --jobs 4 --repeat --protocol archive
 ```
 
-已有complete seal且binary／input／script／protocol相同的run可resume。任何signature或輸出變動會拒絕重用，要求新output；失敗／中斷資料夾不當作完成。`--reference-tolerance METRES` 可強制封存水平與3D RMSE容差；預設先報告差異，避免把未驗證差異藏起來。
+A completed, sealed run can resume only with matching binary, input, script and protocol signatures. Changed signatures or outputs require a new output directory. Failed/interrupted directories are not considered complete. `--reference-tolerance METRES` enforces horizontal and 3D archived RMSE tolerances; the default reports differences explicitly.
 
-### Archive 與 uniform protocol
+### Archive and uniform protocols
 
-- `archive`：Step1–4使用legacy absolute timestamp子步；GN／LM重算native covariance eigen-root。TG使用carried roots與duration子步；C15沿其原本duration策略。這保留舊研究的數值選擇。
-- `uniform`：全部使用carried-root whitening與duration子步，適合對照不同formulation；不承諾與舊LM有限迭代結果逐byte一致。
+- `archive`: Step1–4 use legacy absolute-timestamp substeps; GN/LM recompute the native covariance eigen-root. TG uses carried roots and duration substeps; C15 retains its original duration policy. This preserves historical numerical choices.
+- `uniform`: all recipes use carried-root whitening and duration substeps, suitable for comparing formulations. Byte identity with older finite-iteration LM results is not promised.
 
-兩者sensor／noise／initialization相同。LM diagonal damping與停止條件受whitening basis影響；不能把這個數值策略差異歸因於geometry。每run config記錄實際profile。C15 GN／LM是新增能力，沒有捏造舊reference。
+Sensors, noise and initialization are identical between protocols. Whitening basis affects LM diagonal damping and stopping criteria, so a numerical-policy difference should not be attributed to geometry. Each run records its actual profile. C15 GN/LM capabilities are new and have no invented historical baseline.
 
-## 結果與判讀
+## Outputs and interpretation
 
-- `states.txt`：timestamp、p、quaternion(wxyz)、v、bg、ba，約10Hz。
-- `covariance.csv`：1Hz physical15 covariance，順序theta_body,v_world,p_world,bg_body,ba_body；不是native P。
-- `virtual.csv`：TG physical bnu；C15的零是結構值。
-- `gnss.csv`：相同evaluation時刻的antenna residual、fused flags與初始化標記。
-- `innovations.csv`：NIS、solver iteration、cost與status；拒絕／budget狀態可見。
-- `config.json`／`initialization.json`／`runtime.json`：noise、外參、solver設定、兩筆fix與clock checks。
-- matrix `comparison.csv`／`matrix.json`：各cell分數、reference差與determinism結果。
-- 教學 `metrics.csv`／`trace.csv`／`recovery.csv`／`remainder.csv`／`constraints.csv`／`anchor.csv`與SVG。
+- `states.txt`: timestamp, position, quaternion (wxyz), velocity, gyro bias and accelerometer bias, approximately 10 Hz.
+- `covariance.csv`: physical 15D covariance at 1 Hz, ordered theta_body,v_world,p_world,bg_body,ba_body; this is not native P.
+- `virtual.csv`: TG physical bnu; C15 zeros are structural values.
+- `gnss.csv`: antenna residuals at common evaluation times, fusion flags and initialization markers.
+- `innovations.csv`: NIS, solver iterations, cost and status, including rejection/budget outcomes.
+- `config.json`, `initialization.json`, `runtime.json`: noise, extrinsics, solver settings, two fixes and clock checks.
+- Matrix `comparison.csv` / `matrix.json`: cell scores, reference differences and determinism results.
+- Teaching `metrics.csv`, `trace.csv`, `recovery.csv`, `remainder.csv`, `constraints.csv`, `anchor.csv` and SVGs.
 
-真實資料指標是GNSS antenna residual proxy，沒有獨立完整SE3／bias truth；heading-only融合後heading residual不是獨立yaw accuracy。相同binary重跑逐byte一致與「重現封存算法指標」是不同驗證，總表分開報告。跨CPU／compiler／libm的bitwise identity不作保證。
+Road-data metrics are GNSS antenna residual proxies, without independent full SE3/bias truth. A heading residual after heading fusion is not independent yaw accuracy. Byte-identical repeats and agreement with archived algorithm metrics are separate checks. Cross-CPU/compiler/libm bitwise identity is not guaranteed.
 
-## 本輪驗證結果與已知差異
+## Validation results and known discrepancies
 
-最終96個實測cells全部完成，且每cell重跑結果逐byte相同。8組CTest通過。80個歷史reference中，78個在原宣告1mm RMSE差內；11 pure DR的Step3 GN與Step4 LM差約1.226mm／1.077mm，這兩個嚴格檢查未通過。沒有調參或放寬門檻來改寫結果。
+All 96 final road-data cells completed and repeated byte-identically. All eight CTest suites passed. Of 80 historical reference cells, 78 satisfy the originally declared 1 mm RMSE tolerance. Recording 11 pure DR Step3 GN and Step4 LM differ by approximately 1.226 mm and 1.077 mm respectively, so those two strict checks failed. Parameters and thresholds were not changed to hide these differences.
 
-完整診斷見 [numerical-reproduction.md](docs/numerical-reproduction.md)。預設report分開execution／determinism與archive容差；若要求後者也必須通過，使用 `tools/report_validation.py --require-reference`。目前該命令應nonzero，這是已知、保留的結果。完整中英文總報告見文件索引。完整本地表在 `results/research/validation.md`，精簡摘要在 `references/validation-summary.json`。報告工具會從同一份驗證矩陣同步產生完整 `validation.en.md` 與 `validation.zh-TW.md`。
+See the [English validation report](docs/validation.md) and [numerical investigation](docs/numerical-reproduction.md). The report separates execution/determinism from archive tolerance. `tools/report_validation.py --require-reference` enforces the latter and currently should exit nonzero. The local full report is `results/research/validation.md`; the compact tracked summary is `references/validation-summary.json`. Report generation uses the local edition language, with identical numeric rows in both repositories. The Chinese edition supplies a text-only locale file; the report verification and scoring code are shared.
 
-## 教學執行
+## Run the teaching examples
 
 ```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" -w /work kf-toy:dev bash -c './build/kf_teaching results/teaching 4 12 && python3 tools/render_results.py results/teaching'
 ```
 
-Closed-form truth獨立於filter propagation；IMU midpoint held sampling是近似matched case，coverage不是精確Bayesian證明。Seeds為獨立比較單位，時間samples相關。Scalar、SO3／ZOH、geometry、bias mismatch、heading/dropout、GN／LM恢復、Cstar remainder、TG structural／soft constraint各有對照；詳見[教學文件](docs/teaching.md)。
+Closed-form truth is independent of filter propagation. Midpoint-held IMU sampling is approximately matched; coverage is not an exact Bayesian proof. Seeds are independent comparison units, while time samples are correlated. The [teaching guide](docs/teaching.md) covers scalar KF, SO(3)/ZOH, geometry, bias mismatch, heading/dropout, GN/LM recovery, C-star remainder and TG structural/soft constraints.
 
-原始平面toy `kf`／`replay`／`tools/verify.py`仍保留為第一課；它不輸出完整pose covariance。
+The original planar `kf`, `replay` and `tools/verify.py` remain as an introductory example; they do not output full pose covariance.
 
-設計與研究報告位於忽略的 `plan/`。外部來源、UTM notices與file hashes見[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)及 `references/`。
+Design plans and research reports reside in ignored `plan/`. External sources, UTM notices and file hashes are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and `references/`.

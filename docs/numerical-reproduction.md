@@ -1,32 +1,34 @@
-# Deterministic replay 與封存數值重現是兩項驗證
+# Deterministic replay and archived numerical reproduction are separate checks
 
-最終程式的8組CTest通過。完整matrix每個cell在同binary／image／輸入／protocol下重跑一次，比較所有結果檔案的bytes。另以80個歷史cell核對direct GNSS antenna residual RMSE；C15 GN／LM的16個新cell沒有舊baseline。
+[Traditional Chinese version](https://github.com/r04522611/kf-toy-mandarin/blob/codex/kf-cpp-toy/docs/numerical-reproduction.md)
 
-最初宣告的archive嚴格容差為水平／3D RMSE差1mm。兩個11 pure DR cell超出：
+All eight CTest suites passed. Every full-matrix cell was repeated with the same binary/image/input/protocol and all result bytes compared. Direct GNSS antenna residual RMSE was also compared against 80 archived cells. The 16 new C15 GN/LM cells have no historical baseline.
 
-| Cell | 新水平RMSE m | 封存水平RMSE m | 差異 m |
+The originally declared strict archive tolerance was 1 mm for horizontal/3D RMSE differences. Two recording-11 pure-DR cells exceed it:
+
+|Cell|New horizontal RMSE (m)|Archived horizontal RMSE (m)|Difference (m)|
 |---|---:|---:|---:|
-| Step3 GN | 188.1338323648597 | 188.1350582074412 | -0.0012258425815 |
-| Step4 LM | 111.12085871585587 | 111.11978187916851 | +0.0010768366874 |
+|Step3 GN|188.1338323648597|188.1350582074412|-0.0012258425815|
+|Step4 LM|111.12085871585587|111.11978187916851|+0.0010768366874|
 
-**這兩項1mm檢查未通過。** 沒有修改filter參數或放寬容差把它們改成通過；同binary逐byte重跑是另一個已驗證條件。
+**These two 1 mm checks failed.** Filter parameters and tolerances were not changed to make them pass. Byte-identical repeats of the same binary are a separate verified property.
 
-## 唯讀診斷
+## Read-only diagnosis
 
-兩位獨立review比對全部18,469筆solver事件與17,624筆states：
+Two independent reviews compared all 18,469 solver events and 17,624 state snapshots:
 
-- Noise、median dt、first／second fix時刻、全部18,415列GNSS的timestamp／fusion／validity／initialization masks一致。
-- 第一筆初始化physical state最大差約5.55e-17，bg／ba一致。
-- Step3 GN全程沒有iteration count、status或rejected-trial差異。Position差異由second fix約2.34e-10m逐步累積，最大約2.91mm；因此不能把它全部歸給solver停止條件。
-- Step4 LM第一個trial-rejection差異在update729（約73s），當時皆3iterations／step，final cost差約7e-13；首次status差異在update1556（約155s），step對stalled。最大state position差約2.97mm。
-- Second-fix north residual差2.31684e-10m，約UTM northing半個ULP。原UTM wrapper使用lat*(pi/180)，新runner使用lat*pi/180，實數公式相同但浮點運算次序不同。這是一個可能擾動來源。
+- Noise, median dt, first/second fix times and timestamps/fusion/validity/initialization masks for all 18,415 GNSS rows match.
+- Maximum physical-state difference at the first initialization is approximately 5.55e-17; bg/ba match.
+- Step3 GN has no differences in iteration count, status or rejected trials. Position differences grow from approximately 2.34e-10 m at the second fix to at most approximately 2.91 mm. Solver stopping conditions therefore cannot explain the entire difference.
+- Step4 LM first differs in trial rejection at update 729 (approximately 73 s), with both taking three iterations and final costs differing by approximately 7e-13. Status first differs at update 1556 (approximately 155 s), step versus stalled. Maximum state-position difference is approximately 2.97 mm.
+- The second-fix north residual differs by 2.31684e-10 m, approximately half a UTM northing ULP. The original wrapper uses lat*(pi/180), while the new runner uses lat*pi/180. The real-valued formula is identical but floating-point evaluation order differs, providing a possible perturbation source.
 
-其他等價但數值路徑不同的因素包含：原Sophus quaternion exponential與Rodrigues matrix exponential、18D帶零gravity方向的eigen whitening與15D whitening、dense covariance與QR roots。現有證據支持小擾動經長程feedback放大，但沒有唯一隔離每個原因；不宣稱已證明單一根因。
+Other mathematically equivalent but numerically distinct paths include Sophus quaternion exponential versus Rodrigues matrix exponential, 18D eigen whitening with zero gravity directions versus 15D whitening, and dense covariance versus QR roots. Evidence supports small perturbations amplified through long feedback, but each contribution has not been isolated. No unique root cause is claimed.
 
-## 如何讀取工具結果
+## Reading tool outcomes
 
-`tools/run_matrix.py --reference-tolerance 0.001` 在這兩cell上回報失敗，即使execution與byte repeat成功。原始嚴格檢查結果會保留為 `results/research/matrix.strict-1mm.json`。
+`tools/run_matrix.py --reference-tolerance 0.001` reports failure for these cells even when execution and byte repeat succeed. The original strict results are retained locally in `results/research/matrix.strict-1mm.json`.
 
-不帶該選項的matrix仍列出每個reference差異；`tools/report_validation.py` 永遠按1mm列出strict pass／failure清單，預設針對execution／byte determinism決定exit status。加 `--require-reference` 會令上述兩差異造成nonzero exit。這不是放寬數值門檻，而是避免把不同驗證概念混成單一綠燈。
+Without that option, the matrix still lists every reference difference. `tools/report_validation.py` defaults to the 1 mm strict pass/failure list, while its default exit status checks execution/byte determinism. Adding `--require-reference` makes the two differences cause a nonzero exit. This separates validation concepts rather than relaxing the numerical threshold.
 
-預設一鍵reproduce產生完整report，讀者可自行要求strict numeric gate。`plan/`原研究表不被改寫，新的實驗報告保留自己的數值與差異。
+The one-command reproduction generates the full report; readers may request the strict numerical gate. Original research tables in ignored `plan/` are preserved, and new experiment reports retain their own values and discrepancies.
