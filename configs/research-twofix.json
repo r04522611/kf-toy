@@ -1,0 +1,11 @@
+{
+  "schema": "kf-research-twofix-v1",
+  "initializer": {"static_duration_s": 10.0, "maximum_queue": 2000, "pulse_static_threshold": 5, "maximum_gyro_variance_norm": 0.5, "maximum_accel_variance_norm": 0.05, "gravity_norm_m_s2": 9.81, "variance_denominator": "n-1"},
+  "noise": {"imu_density_squared": "static sample variance * median positive IMU interval", "gyro_bias_random_walk_density_squared": 1e-10, "accel_bias_random_walk_density_squared": 1e-6},
+  "measurement": {"wheel_std_m_s": [0.5,0.5,0.5], "position_std_m": [0.1,0.1,0.1], "heading_std_deg": 1.0, "lever_m": [-0.17,-0.20,0.0], "antenna_yaw_deg": 12.06},
+  "wheel": {"radius_m": 0.155, "pulses_per_revolution": 1024, "aperture_s": 0.1, "lateral_vertical": "zero velocity NHC assumptions"},
+  "propagation": {"held_input": "previous IMU sample causal ZOH", "max_substep_s": 0.01, "gravity": "fixed"},
+  "initialization": "first valid-heading GNSS after static readiness: mean/prior; second valid-heading GNSS: full joint position+heading update with selected backend",
+  "evaluation": "all post-second-fix GNSS rows; no later position update; heading mode uses original valid heading mask",
+  "note": "This file documents fixed replay3d constants; CLI does not accept arbitrary configuration overrides. No anchor is active."
+}

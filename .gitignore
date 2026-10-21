@@ -1,0 +1,7 @@
+/build/
+/results/
+/plan/
+
+/data/
+__pycache__/
+*.pyc

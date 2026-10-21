@@ -1,0 +1,15 @@
+{
+  "files": {
+    "src/ch3/research/TG_EqF/fixed_iterated.cc": "5885c91aef1964b222e90362411fef5c50ddb1646c04257d432c26cdfe6aac6a",
+    "src/ch3/research/TG_EqF/fixed_reference.cc": "d04e3ca9fd037fd73cd29ac9908feae244619581a7b9eacc4249206e016075bd",
+    "src/ch3/research/TG_EqF/tg_filter.cc": "910ac3df3094fe6a926c8418d6d53c7ced2f8bc7e984e36f2fae46bbfc8298df",
+    "src/ch3/research/common_reference.cc": "b58d1154460f7ac131f9bd556d08e7ae30f87aa79aabe31d46959f08f31f2873",
+    "src/ch3/research/constrained_tg/constrained_filter.cc": "62b71439585bb3afc5180f2e72b417e83edfee0216778165b0773f930e3a5b5a",
+    "src/ch3/research/constrained_tg/run_dataset.cc": "e2eecef32aa990af579323c9d9fa3768290370ff12524f279ed451e5d20e0681",
+    "src/ch3/research/lie_tools.h": "72a4d2f3ae1d2639490339f7e40f30c8a26f1500c0ecb179264801ec273c3456",
+    "src/ch3/research/research_filter.cc": "e4ae27cc35b9962af2eedf95b588165ef3bb3ecdc8a33d9a324e2f7f08dd5454",
+    "src/ch3/static_imu_init.cc": "386c2aa6976aef82fcc7d632a782caf9d3d1e5d10dd82d7aa95560c22b7082e2",
+    "src/ch3/static_imu_init.h": "aec7cd6c90b4a7d675b55ad1a00d39ab96c24c454e066b7f59f270df087b7288"
+  },
+  "local_reference_root": "/home/pinghua/slam_in_autonomous_driving"
+}
