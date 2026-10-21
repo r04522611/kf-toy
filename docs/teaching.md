@@ -1,5 +1,7 @@
 # KF 教學案例：從可解析答案到研究邊界
 
+[繁體中文](teaching.md) | [English](teaching.en.md)
+
 這份教材搭配 `kf_teaching` 與 `kf_math_tests`。目標是讓讀者在同一組資料、prior、noise 與評分下，辨認 formulation、output approximation 與 nonlinear solver 各自改了什麼。它們不是算法排名，也不以真實資料 GNSS proxy 當成完整 pose truth。
 
 ## 執行與產物
@@ -13,7 +15,7 @@ python3 tools/render_results.py results/teaching
 # optional: python3 tools/plot_examples.py results/teaching
 ```
 
-第三個參數是 seeds 數，第四個參數是總秒數；沒有參數時為 `results/teaching 4 12`。繪圖是可選步驟，需要 matplotlib；它不參與 estimator、評分或 deterministic 核對。最小 C++ runtime 不依賴 Python 或 ROS。繪圖可以在 Ubuntu host 上執行。
+執行檔之後的三個參數依序為輸出目錄、seeds 數與總秒數；沒有參數時為 `results/teaching 4 12`。`render_results.py` 使用 Python standard library 產生 SVG；只有可選的 `plot_examples.py` PNG 繪圖需要 matplotlib。繪圖不參與 estimator、評分或 deterministic 核對。最小 C++ runtime 不依賴 Python 或 ROS。繪圖可以在 Ubuntu host 上執行。
 
 輸出如下：
 

@@ -1,6 +1,16 @@
 # Kalman Filter 教學 library：C++17／Ubuntu Docker
 
+[繁體中文](README.md) | [English](README.en.md)
+
 獨立專案：`/home/pinghua/kf-toy`，branch `codex/kf-cpp-toy`。原 SLAM repository 僅作唯讀公式、資料與封存結果 reference；新程式不需 ROS、Sophus、PCL、OpenCV 或原 repo 的 binary／headers。
+
+## 文件索引
+
+| 文件 | English | 繁體中文 |
+|---|---|---|
+| 使用說明 | [Usage](README.en.md) | [使用說明](README.md) |
+| 完整十二課教學 | [Teaching](docs/teaching.en.md) | [教學文件](docs/teaching.md) |
+| 完整96組驗證總報告 | [Validation](docs/validation.en.md) | [驗證總報告](docs/validation.zh-TW.md) |
 
 ## 已實作的內容
 
@@ -99,7 +109,7 @@ python3 tools/run_matrix.py --binary build/replay3d --data data/events --output 
 
 最終96個實測cells全部完成，且每cell重跑結果逐byte相同。8組CTest通過。80個歷史reference中，78個在原宣告1mm RMSE差內；11 pure DR的Step3 GN與Step4 LM差約1.226mm／1.077mm，這兩個嚴格檢查未通過。沒有調參或放寬門檻來改寫結果。
 
-完整診斷見 [numerical-reproduction.md](docs/numerical-reproduction.md)。預設report分開execution／determinism與archive容差；若要求後者也必須通過，使用 `tools/report_validation.py --require-reference`。目前該命令應nonzero，這是已知、保留的結果。完整本地表在 `results/research/validation.md`，精簡摘要在 `references/validation-summary.json`。
+完整診斷見 [numerical-reproduction.md](docs/numerical-reproduction.md)。預設report分開execution／determinism與archive容差；若要求後者也必須通過，使用 `tools/report_validation.py --require-reference`。目前該命令應nonzero，這是已知、保留的結果。完整中英文總報告見文件索引。完整本地表在 `results/research/validation.md`，精簡摘要在 `references/validation-summary.json`。報告工具會從同一份驗證矩陣同步產生完整 `validation.en.md` 與 `validation.zh-TW.md`。
 
 ## 教學執行
 
