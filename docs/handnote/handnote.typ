@@ -3,7 +3,7 @@
 #set page(paper: "a4", margin: (x: 2.1cm, y: 2.2cm), numbering: "1", header: context {
   if counter(page).get().first() > 1 [
     #set text(size: 8.5pt, fill: luma(110))
-    From the ESKF to invariant and tangent-group filters — review draft 2
+    From the ESKF to invariant and tangent-group filters — review draft 3
     #h(1fr) kf-toy teaching note
   ]
 })
@@ -146,6 +146,7 @@ $ mat(bold(H)_"vel"; bold(H)_"pos"; bold(H)_"yaw") = mat(
   hx(hat(v)_B), Rh^top, 0, 0, 0;
   -Rh hx(bold(l)), 0, I3, 0, 0;
   bold(h)_theta^top, 0, 0, 0, 0). $ <eq:H1>
+In every scenario of this note $bold(H)_"vel"$ receives a genuine three-axis body-velocity measurement with noise on all three channels. A wheel-speed or CAN sensor supplies only the forward channel; what is usually done about the other two is the non-holonomic constraint, discussed on its own in @sec:nhc.
 
 == Step1 in the toy
 
@@ -485,9 +486,15 @@ Identical numbers appear for every recipe and backend: no chart or solver can hi
      fig("trace_bias_mismatch_bg.svg", [Gyro-bias error norm: the filter follows the step slowly (0.05 rad/s remaining after 6 s) because its process model says the bias cannot move.]))
 `metrics.csv` reports NEES15/15 ≈ 72 for every recipe and backend. Invariant charts, tangent groups and iterated solvers all give the same answer because none of them touch the process-noise model.
 
-== Full 3-D velocity versus forward + NHC
+== Full 3-D velocity versus forward + NHC <sec:nhc>
 
-Step2, truth with lateral body velocity 0 or 0.6 m/s, heading always available, each velocity channel variance $0.0025 (m\/s)^2$. The NHC variant uses the same noisy forward sample and sets the lateral and vertical channels to zero.
+#note("What the non-holonomic constraint is, and why it is assumed")[
+  A ground vehicle's speed sensor (wheel odometry, CAN) measures one number: the forward speed along the body x-axis. The velocity row of @eq:H1 wants three. The *non-holonomic constraint* (NHC) fills the missing two with a kinematic assumption about wheeled motion: a vehicle that does not skid sideways and stays on the road surface has zero lateral and zero vertical velocity *at the wheel contact point, in the body frame*. The constraint is written as a pseudo-measurement that reuses @eq:H1 unchanged,
+  $ bold(z)_"NHC" = mat(tilde(v)_x; 0; 0), wide bold(y) = Rh^top hat(v), wide bold(V)_"NHC" = mat(sigma_x^2, 0, 0; 0, sigma_"lat"^2, 0; 0, 0, sigma_"vert"^2), $ <eq:nhc>
+  so the filter sees a full 3-D velocity although only one channel was sensed. The assumption is made because it is cheap and powerful: the two zero channels are what ties the IMU to the vehicle. Through the $hx(hat(v)_B)$ block of @eq:H1 the lateral channel observes yaw-rate-related attitude and gyro-bias error, and the vertical channel observes pitch and the vertical velocity — exactly the directions that dead reckoning on forward speed alone leaves unobserved. The price is that $sigma_"lat"$, $sigma_"vert"$ are not sensor specifications but a statement about the vehicle: they must cover sideslip in fast cornering or low friction, vertical motion on ramps and bumps, and the lever arm between the IMU and the axle (the IMU's own lateral velocity in a turn is $omega_z l$, not zero). In this note the toy sets all three variances to $0.0025 (m\/s)^2$ and asks what happens when the vehicle does and does not obey the assumption.
+]
+
+Step2, truth with lateral body velocity 0 or 0.6 m/s, heading always available, each velocity channel variance $0.0025 (m\/s)^2$. The NHC variant @eq:nhc uses the same noisy forward sample and sets the lateral and vertical channels to zero.
 #two(fig("slip_rmse.svg", [Log scale. Without sideslip NHC is a valid constraint and slightly helps (0.086 vs 0.099 m). With 0.6 m/s sideslip the NHC likelihood is wrong: 2.98 m.]),
      fig("slip_cov.svg", [Lateral-velocity 95% coverage. Measured 3-D: 0.97. NHC without slip: 0.99. NHC with slip: 0.00 — confidently wrong in the lateral direction.]))
 #fig("slip_nis.svg", [Mean velocity NIS (3 d.o.f.). NHC *lowers* NIS (1.2–1.7 vs 2.75) even when wrong, because two of its three channels are noiseless by construction; NIS alone would not flag the failure. Coverage against truth does.], w: 60%)
