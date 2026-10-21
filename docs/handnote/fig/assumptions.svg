@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+<rect width="640" height="360" fill="white"/>
+<text x="70" y="24" font-size="15" font-weight="bold" font-family="Helvetica, Arial, sans-serif">One heading update from prior yaw 1.2 rad: |posterior yaw - truth| (Step2)</text>
+<line x1="70" y1="300.0" x2="490" y2="300.0" stroke="#e4e4e4"/>
+<text x="62" y="304.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0</text>
+<line x1="70" y1="256.7" x2="490" y2="256.7" stroke="#e4e4e4"/>
+<text x="62" y="260.7" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.2</text>
+<line x1="70" y1="213.3" x2="490" y2="213.3" stroke="#e4e4e4"/>
+<text x="62" y="217.3" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.4</text>
+<line x1="70" y1="170.0" x2="490" y2="170.0" stroke="#e4e4e4"/>
+<text x="62" y="174.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.6</text>
+<line x1="70" y1="126.7" x2="490" y2="126.7" stroke="#e4e4e4"/>
+<text x="62" y="130.7" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.8</text>
+<line x1="70" y1="83.3" x2="490" y2="83.3" stroke="#e4e4e4"/>
+<text x="62" y="87.3" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">1</text>
+<line x1="70" y1="40.0" x2="490" y2="40.0" stroke="#e4e4e4"/>
+<text x="62" y="44.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">1.2</text>
+<rect x="84.0" y="299.7" width="37.3" height="0.3" fill="#2455a4"/>
+<rect x="224.0" y="126.6" width="37.3" height="173.4" fill="#2455a4"/>
+<rect x="364.0" y="41.0" width="37.3" height="259.0" fill="#2455a4"/>
+<rect x="504" y="44" width="20" height="12" fill="#2455a4"/>
+<text x="530" y="54" font-size="12" font-family="Helvetica, Arial, sans-serif">KF</text>
+<rect x="121.3" y="299.7" width="37.3" height="0.3" fill="#df741a"/>
+<rect x="261.3" y="126.6" width="37.3" height="173.4" fill="#df741a"/>
+<rect x="401.3" y="41.0" width="37.3" height="259.0" fill="#df741a"/>
+<rect x="504" y="62" width="20" height="12" fill="#df741a"/>
+<text x="530" y="72" font-size="12" font-family="Helvetica, Arial, sans-serif">GN</text>
+<rect x="158.7" y="299.7" width="37.3" height="0.3" fill="#278566"/>
+<rect x="298.7" y="126.6" width="37.3" height="173.4" fill="#278566"/>
+<rect x="438.7" y="41.0" width="37.3" height="259.0" fill="#278566"/>
+<rect x="504" y="80" width="20" height="12" fill="#278566"/>
+<text x="530" y="90" font-size="12" font-family="Helvetica, Arial, sans-serif">LM</text>
+<text x="140.0" y="316" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">correct_likelihood</text>
+<text x="280.0" y="316" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">wrong_heading</text>
+<text x="420.0" y="316" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">overconfident_wrong_prior</text>
+<path d="M70 40V300H490" fill="none" stroke="#222"/>
+<text transform="translate(16,170) rotate(-90)" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif">|yaw error| (rad)</text>
+</svg>

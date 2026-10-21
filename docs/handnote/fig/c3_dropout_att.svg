@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380">
+<rect width="640" height="380" fill="white"/>
+<text x="70" y="24" font-size="15" font-weight="bold" font-family="Helvetica, Arial, sans-serif">heading_dropout: KF attitude error, seed 0 (shaded = no heading)</text>
+<rect x="210.0" y="40" width="160.0" height="285" fill="#f2d7a7" opacity=".45"/>
+<line x1="70" y1="325.0" x2="470" y2="325.0" stroke="#e4e4e4"/>
+<text x="62" y="329.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0</text>
+<line x1="70" y1="284.3" x2="470" y2="284.3" stroke="#e4e4e4"/>
+<text x="62" y="288.3" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.01</text>
+<line x1="70" y1="243.6" x2="470" y2="243.6" stroke="#e4e4e4"/>
+<text x="62" y="247.6" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.02</text>
+<line x1="70" y1="202.9" x2="470" y2="202.9" stroke="#e4e4e4"/>
+<text x="62" y="206.9" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.03</text>
+<line x1="70" y1="162.1" x2="470" y2="162.1" stroke="#e4e4e4"/>
+<text x="62" y="166.1" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.04</text>
+<line x1="70" y1="121.4" x2="470" y2="121.4" stroke="#e4e4e4"/>
+<text x="62" y="125.4" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.05</text>
+<line x1="70" y1="80.7" x2="470" y2="80.7" stroke="#e4e4e4"/>
+<text x="62" y="84.7" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.06</text>
+<line x1="70" y1="40.0" x2="470" y2="40.0" stroke="#e4e4e4"/>
+<text x="62" y="44.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0.07</text>
+<line x1="70.0" y1="40" x2="70.0" y2="325" stroke="#e4e4e4"/>
+<text x="70.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">0</text>
+<line x1="136.7" y1="40" x2="136.7" y2="325" stroke="#e4e4e4"/>
+<text x="136.7" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">2</text>
+<line x1="203.3" y1="40" x2="203.3" y2="325" stroke="#e4e4e4"/>
+<text x="203.3" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">4</text>
+<line x1="270.0" y1="40" x2="270.0" y2="325" stroke="#e4e4e4"/>
+<text x="270.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">6</text>
+<line x1="336.7" y1="40" x2="336.7" y2="325" stroke="#e4e4e4"/>
+<text x="336.7" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">8</text>
+<line x1="403.3" y1="40" x2="403.3" y2="325" stroke="#e4e4e4"/>
+<text x="403.3" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">10</text>
+<line x1="470.0" y1="40" x2="470.0" y2="325" stroke="#e4e4e4"/>
+<text x="470.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">12</text>
+<path d="M70 40V325H470" fill="none" stroke="#222"/>
+<polyline points="76.7,67.4 83.3,169.2 90.0,198.7 96.7,184.1 103.3,206.0 110.0,183.1 116.7,231.2 123.3,236.6 130.0,271.2 136.7,281.1 143.3,266.0 150.0,202.4 156.7,213.7 163.3,216.4 170.0,218.4 176.7,278.1 183.3,288.6 190.0,274.8 196.7,267.2 203.3,302.2 210.0,283.2 216.7,272.6 223.3,276.3 230.0,265.1 236.7,275.2 243.3,275.2 250.0,263.1 256.7,262.2 263.3,269.1 270.0,266.6 276.7,263.7 283.3,269.4 290.0,271.8 296.7,275.8 303.3,265.9 310.0,279.2 316.7,266.7 323.3,266.8 330.0,272.7 336.7,268.6 343.3,255.7 350.0,247.8 356.7,232.7 363.3,240.0 370.0,245.1 376.7,280.3 383.3,305.2 390.0,255.5 396.7,236.3 403.3,259.4 410.0,261.5 416.7,284.3 423.3,284.4 430.0,293.5 436.7,286.6 443.3,281.0 450.0,275.2 456.7,294.9 463.3,295.6 470.0,298.5" fill="none" stroke="#2455a4" stroke-width="1.8"/>
+<line x1="484" y1="50" x2="508" y2="50" stroke="#2455a4" stroke-width="2.5"/>
+<text x="514" y="54" font-size="12" font-family="Helvetica, Arial, sans-serif">Step1</text>
+<polyline points="76.7,67.1 83.3,168.6 90.0,199.3 96.7,184.6 103.3,206.7 110.0,183.6 116.7,231.8 123.3,238.2 130.0,272.5 136.7,282.3 143.3,266.1 150.0,203.1 156.7,214.1 163.3,216.8 170.0,218.3 176.7,277.8 183.3,288.1 190.0,275.1 196.7,267.1 203.3,303.5 210.0,284.4 216.7,273.7 223.3,276.8 230.0,265.9 236.7,276.1 243.3,275.8 250.0,263.9 256.7,262.8 263.3,269.5 270.0,266.9 276.7,264.3 283.3,269.7 290.0,272.2 296.7,276.2 303.3,266.5 310.0,279.3 316.7,267.1 323.3,267.2 330.0,272.9 336.7,268.7 343.3,255.7 350.0,247.7 356.7,232.6 363.3,239.9 370.0,245.0 376.7,280.3 383.3,304.6 390.0,255.4 396.7,236.4 403.3,259.5 410.0,261.6 416.7,284.5 423.3,284.5 430.0,293.3 436.7,286.8 443.3,281.4 450.0,275.5 456.7,295.3 463.3,296.1 470.0,299.3" fill="none" stroke="#df741a" stroke-width="1.8"/>
+<line x1="484" y1="68" x2="508" y2="68" stroke="#df741a" stroke-width="2.5"/>
+<text x="514" y="72" font-size="12" font-family="Helvetica, Arial, sans-serif">Step2</text>
+<polyline points="76.7,67.1 83.3,166.0 90.0,203.0 96.7,186.4 103.3,209.6 110.0,185.6 116.7,233.3 123.3,240.5 130.0,274.5 136.7,284.5 143.3,267.5 150.0,204.8 156.7,216.1 163.3,218.9 170.0,220.1 176.7,279.2 183.3,288.9 190.0,274.9 196.7,267.1 203.3,302.9 210.0,284.2 216.7,274.1 223.3,277.6 230.0,266.6 236.7,276.7 243.3,276.9 250.0,265.2 256.7,264.2 263.3,270.7 270.0,268.6 276.7,265.6 283.3,271.3 290.0,273.8 296.7,278.0 303.3,268.1 310.0,282.6 316.7,270.3 323.3,270.6 330.0,278.2 336.7,275.6 343.3,266.1 350.0,259.6 356.7,244.1 363.3,250.0 370.0,254.8 376.7,275.7 383.3,303.6 390.0,253.1 396.7,234.1 403.3,258.1 410.0,260.4 416.7,283.4 423.3,283.7 430.0,293.0 436.7,286.4 443.3,281.1 450.0,275.3 456.7,295.2 463.3,296.1 470.0,299.3" fill="none" stroke="#278566" stroke-width="1.8"/>
+<line x1="484" y1="86" x2="508" y2="86" stroke="#278566" stroke-width="2.5"/>
+<text x="514" y="90" font-size="12" font-family="Helvetica, Arial, sans-serif">Step3</text>
+<polyline points="76.7,67.1 83.3,165.8 90.0,202.7 96.7,186.0 103.3,209.6 110.0,185.7 116.7,234.1 123.3,241.3 130.0,274.5 136.7,286.2 143.3,265.6 150.0,203.3 156.7,214.1 163.3,218.0 170.0,219.0 176.7,279.4 183.3,288.1 190.0,275.8 196.7,266.9 203.3,304.0 210.0,285.2 216.7,274.4 223.3,276.7 230.0,266.4 236.7,278.0 243.3,277.4 250.0,265.5 256.7,264.1 263.3,270.4 270.0,267.9 276.7,265.8 283.3,270.5 290.0,273.5 296.7,277.7 303.3,268.2 310.0,281.5 316.7,270.0 323.3,270.2 330.0,276.5 336.7,273.0 343.3,262.4 350.0,255.5 356.7,240.4 363.3,246.8 370.0,251.7 376.7,276.6 383.3,301.8 390.0,253.2 396.7,234.7 403.3,258.5 410.0,260.9 416.7,284.3 423.3,284.3 430.0,292.8 436.7,287.7 443.3,282.9 450.0,276.8 456.7,296.6 463.3,297.7 470.0,302.2" fill="none" stroke="#a33165" stroke-width="1.8"/>
+<line x1="484" y1="104" x2="508" y2="104" stroke="#a33165" stroke-width="2.5"/>
+<text x="514" y="108" font-size="12" font-family="Helvetica, Arial, sans-serif">Step4</text>
+<text x="270" y="368" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif">time (s)</text>
+<text transform="translate(16,182) rotate(-90)" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif">attitude error (rad)</text>
+</svg>

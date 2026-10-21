@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="380" viewBox="0 0 640 380">
+<rect width="640" height="380" fill="white"/>
+<text x="70" y="24" font-size="15" font-weight="bold" font-family="Helvetica, Arial, sans-serif">Scalar random-walk KF: estimate vs truth</text>
+<line x1="70" y1="325.0" x2="470" y2="325.0" stroke="#e4e4e4"/>
+<text x="62" y="329.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">0</text>
+<line x1="70" y1="268.0" x2="470" y2="268.0" stroke="#e4e4e4"/>
+<text x="62" y="272.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">1</text>
+<line x1="70" y1="211.0" x2="470" y2="211.0" stroke="#e4e4e4"/>
+<text x="62" y="215.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">2</text>
+<line x1="70" y1="154.0" x2="470" y2="154.0" stroke="#e4e4e4"/>
+<text x="62" y="158.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">3</text>
+<line x1="70" y1="97.0" x2="470" y2="97.0" stroke="#e4e4e4"/>
+<text x="62" y="101.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">4</text>
+<line x1="70" y1="40.0" x2="470" y2="40.0" stroke="#e4e4e4"/>
+<text x="62" y="44.0" text-anchor="end" font-size="11" font-family="Helvetica, Arial, sans-serif">5</text>
+<line x1="70.0" y1="40" x2="70.0" y2="325" stroke="#e4e4e4"/>
+<text x="70.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">0</text>
+<line x1="150.0" y1="40" x2="150.0" y2="325" stroke="#e4e4e4"/>
+<text x="150.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">10</text>
+<line x1="230.0" y1="40" x2="230.0" y2="325" stroke="#e4e4e4"/>
+<text x="230.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">20</text>
+<line x1="310.0" y1="40" x2="310.0" y2="325" stroke="#e4e4e4"/>
+<text x="310.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">30</text>
+<line x1="390.0" y1="40" x2="390.0" y2="325" stroke="#e4e4e4"/>
+<text x="390.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">40</text>
+<line x1="470.0" y1="40" x2="470.0" y2="325" stroke="#e4e4e4"/>
+<text x="470.0" y="341" text-anchor="middle" font-size="11" font-family="Helvetica, Arial, sans-serif">50</text>
+<path d="M70 40V325H470" fill="none" stroke="#222"/>
+<polyline points="70.0,325.0 78.0,319.3 86.0,313.6 94.0,307.9 102.0,302.2 110.0,296.5 118.0,290.8 126.0,285.1 134.0,279.4 142.0,273.7 150.0,268.0 158.0,262.3 166.0,256.6 174.0,250.9 182.0,245.2 190.0,239.5 198.0,233.8 206.0,228.1 214.0,222.4 222.0,216.7 230.0,211.0 238.0,205.3 246.0,199.6 254.0,193.9 262.0,188.2 270.0,182.5 278.0,176.8 286.0,171.1 294.0,165.4 302.0,159.7 310.0,154.0 318.0,148.3 326.0,142.6 334.0,136.9 342.0,131.2 350.0,125.5 358.0,119.8 366.0,114.1 374.0,108.4 382.0,102.7 390.0,97.0 398.0,91.3 406.0,85.6 414.0,79.9 422.0,74.2 430.0,68.5 438.0,62.8 446.0,57.1 454.0,51.4 462.0,45.7" fill="none" stroke="#2455a4" stroke-width="1.8"/>
+<line x1="484" y1="50" x2="508" y2="50" stroke="#2455a4" stroke-width="2.5"/>
+<text x="514" y="54" font-size="12" font-family="Helvetica, Arial, sans-serif">truth</text>
+<polyline points="70.0,315.9 78.0,323.8 86.0,298.9 94.0,299.8 102.0,293.4 110.0,301.6 118.0,288.7 126.0,271.4 134.0,296.4 142.0,284.1 150.0,259.2 158.0,276.6 166.0,273.9 174.0,242.6 182.0,241.0 190.0,249.3 198.0,227.5 206.0,228.9 214.0,211.3 222.0,205.1 230.0,212.5 238.0,208.2 246.0,198.0 254.0,191.8 262.0,213.8 270.0,183.7 278.0,180.1 286.0,152.4 294.0,160.1 302.0,151.9 310.0,159.0 318.0,145.4 326.0,139.3 334.0,119.3 342.0,139.1 350.0,107.0 358.0,135.9 366.0,112.4 374.0,88.7 382.0,106.6 390.0,86.1 398.0,92.8 406.0,104.8 414.0,86.6 422.0,73.4 430.0,74.9 438.0,60.2 446.0,51.2 454.0,41.3 462.0,45.0" fill="none" stroke="#df741a" stroke-width="1.8"/>
+<line x1="484" y1="68" x2="508" y2="68" stroke="#df741a" stroke-width="2.5"/>
+<text x="514" y="72" font-size="12" font-family="Helvetica, Arial, sans-serif">measurement</text>
+<polyline points="70.0,316.0 78.0,317.7 86.0,306.2 94.0,300.2 102.0,294.1 110.0,293.6 118.0,288.2 126.0,278.2 134.0,281.8 142.0,279.2 150.0,267.9 158.0,267.9 166.0,266.7 174.0,253.9 182.0,245.3 190.0,243.4 198.0,233.7 206.0,228.4 214.0,218.3 222.0,209.6 230.0,207.3 238.0,204.2 246.0,198.3 254.0,192.3 262.0,197.2 270.0,188.5 278.0,181.7 286.0,166.8 294.0,160.7 302.0,153.8 310.0,152.3 318.0,146.1 326.0,140.0 334.0,128.5 342.0,129.1 350.0,117.0 358.0,120.9 366.0,114.1 374.0,100.7 382.0,99.5 390.0,90.8 398.0,88.1 406.0,91.2 414.0,85.9 422.0,77.5 430.0,73.0 438.0,64.6 446.0,55.9 454.0,46.7 462.0,42.5" fill="none" stroke="#278566" stroke-width="1.8"/>
+<line x1="484" y1="86" x2="508" y2="86" stroke="#278566" stroke-width="2.5"/>
+<text x="514" y="90" font-size="12" font-family="Helvetica, Arial, sans-serif">estimate</text>
+<text x="270" y="368" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif">step</text>
+<text transform="translate(16,182) rotate(-90)" text-anchor="middle" font-size="12" font-family="Helvetica, Arial, sans-serif">x</text>
+</svg>
